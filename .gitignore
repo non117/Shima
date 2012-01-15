@@ -1,0 +1,8 @@
+.DS_Store
+*.png
+*.settings
+*.pyc
+.project
+.pydevproject
+conf/
+log/

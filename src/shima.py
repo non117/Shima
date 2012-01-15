@@ -6,7 +6,7 @@ from random import randint
 
 class Icon(object):
     def __init__(self):
-        regexp_str = u"(?P<face>(face|顔|かお|表情)\s?((1[01])|[1-9]{1}))|"\
+        regexp_str = u"(?P<face>(face|顔|かお|表情)\s?((1[0-2])|[1-9]{1}))|"\
                     + u"(?P<ribbon>(ribbon|リボン))|"\
                     + u"(?P<cheek>(cheek|ほほ|頬)\s?[123])|"\
                     + u"(?P<pants>(dot|stripe|(しま|縞)(ぱん|パン)|(水|みず)(たま|玉)))|"\
@@ -32,6 +32,7 @@ class Icon(object):
         face9 = Image.open("icon/face9.png")
         face10 = Image.open("icon/face10.png")
         face11 = Image.open("icon/face11.png")
+        face12 = Image.open("icon/face12.png")
         frame = Image.open("icon/frame.png")
         ribbon = Image.open("icon/ribbon.png")
         dot = Image.open("icon/spotted_mask.png")
@@ -39,7 +40,8 @@ class Icon(object):
         base_mask = Image.open("icon/pants_base_mask.png")
         self.image = {"normal":base, "pants":base_pants, "cheek":{1:cheek1, 2:cheek2, 3:cheek3},
                       "face":{1:face1, 2:face2, 3:face3, 4:face4, 5:face5, 
-                              6:face6, 7:face7, 8:face8, 9:face9, 10:face10, 11:face11}, "frame":frame,
+                              6:face6, 7:face7, 8:face8, 9:face9, 10:face10, 11:face11, 12:face12},
+                       "frame":frame,
                       "ribbon":ribbon, "dot":dot, "stripe":stripe, "base_mask":base_mask}
         
         self.base_image = self.image["pants"]
@@ -82,7 +84,7 @@ class Icon(object):
         ''' commandの辞書の値が正しいかチェックする '''
         if command.has_key("face"):
             num = int(re.compile("\d{1,2}").search(command["face"]).group())
-            if num > 0 and num < 12:
+            if num > 0 and num < 13:
                 command["face"] = num
             else:
                 del command["face"]

@@ -322,12 +322,18 @@ class Boxnya(object):
         stream.readline()
         while True:
             if datetime.datetime.now().strftime("%H%M") == "0000":
-                color_str = str(shima.random_color()) + "base %s face %s " % (str(shima.random_color()), random.randint(1,12))
-                color_str += {1:"stripe",2:"dot",3:"nopants"}[random.randint(1,3)]
+                lucky_color = str(shima.random_color())
+                base_color = 'base %s' % str(shima.random_color())
+                face = 'face %s' % str(random.randint(1,12))
+                if random.randint(0,1):
+                    color_str = '%s %s %s %s' % (lucky_color, base_color, face, 
+                                                 {1:"stripe",2:"dot"}[random.randint(1,2)])
+                else:
+                    color_str = "nopants"
                 icon.command_perser(color_str)
                 icon.gen_icon()
                 icon.upload_image("icon/icon.png")
-                icon.post("きょうのラッキーカラーは%sです！" % color_str)
+                icon.post("きょうのラッキーカラーは%sです！" % lucky_color)
             try:
                 recv = stream.readline()
             except ssl.SSLError:

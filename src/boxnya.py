@@ -321,7 +321,7 @@ class Boxnya(object):
         stream.readline()
         stream.readline()
         while True:
-            if datetime.datetime.now().strftime("%H%M") == "0000":
+            if datetime.datetime.now().strftime("%H%M%S") == "000000":
                 lucky_color = str(shima.random_color())
                 base_color = 'base %s' % str(shima.random_color())
                 face = 'face %s' % str(random.randint(1,12))

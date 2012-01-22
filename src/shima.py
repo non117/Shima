@@ -2,6 +2,7 @@
 import Image, ImageChops
 import tweepy
 import re
+from pit import Pit
 from random import randint
 
 class Icon(object):
@@ -51,7 +52,8 @@ class Icon(object):
         self.cheek_image = self.image["cheek"][1]
         self.face_image = self.image["face"][1]
         self.equip_pants = True
-        
+        #token = Pit.get("shima")["token"]
+        #key = Pit.get("shima")["key"]
         auth = tweepy.OAuthHandler("LVZQwxmDqrNaOeY8q9V6XQ","F67TTUx5WmnHBu9SKvagLBVCJfxn0UdJI2LiPdQ3hU")
         auth.set_access_token("85324406-x8wnMEaSUp6yokdFukIVBHivkfnnZE93ZMK81JBY","W5SmjPpFIsiSvklYUkhcsbWnElyQJYY8oasiY1MMqMs")
         self.oauthapi = tweepy.API(auth)

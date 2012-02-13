@@ -1,9 +1,33 @@
 # coding:utf-8
 import Image, ImageChops
-import tweepy
 import re
-from pit import Pit
+from os import path
 from random import randint
+
+from lib.core import Output
+from lib.twitter.api import Api
+
+class shima(Output):
+    ''' settings.py
+    "shima":{"include":["twitter"], "screen_name":"YOUR USERNAME"}
+    '''
+    def init(self):
+        if isinstance(self.twitter, dict):
+            self.twitter = [self.twitter]
+        apilist = [Api(twi["atoken"],twi["atokensecret"]) for twi in self.twitter]
+        self.api = None
+        for a in apilist:
+            user = a.usertimeline(count=1)[0]["user"]
+            name = user["screen_name"]
+            if name == self.screen_name:
+                self.api = a
+        self.icon = Icon()
+        self.icon_path = self.icon.base_path + "/icon.png"
+    
+    def throw(self, packet):
+        text = packet["data"]
+        if self.icon.gen_icon(text):
+            self.api.upload_icon(self.icon_path)
 
 class Icon(object):
     def __init__(self):
@@ -17,28 +41,30 @@ class Icon(object):
         self.regexp = re.compile(regexp_str)
         self.stripe_regexp = re.compile(u"stripe|(しま|縞)(ぱん|パン)")
         self.dot_regexp = re.compile(u"dot|(水|みず)(たま|玉)")
-        base = Image.open("icon/non_nopants.png")
-        base_pants = Image.open("icon/non_pants.png")
-        cheek1 = Image.open("icon/cheek1.png")
-        cheek2 = Image.open("icon/cheek2.png")
-        cheek3 = Image.open("icon/cheek3.png")
-        face1 = Image.open("icon/face1.png")
-        face2 = Image.open("icon/face2.png")
-        face3 = Image.open("icon/face3.png")
-        face4 = Image.open("icon/face4.png")
-        face5 = Image.open("icon/face5.png")
-        face6 = Image.open("icon/face6.png")
-        face7 = Image.open("icon/face7.png")
-        face8 = Image.open("icon/face8.png")
-        face9 = Image.open("icon/face9.png")
-        face10 = Image.open("icon/face10.png")
-        face11 = Image.open("icon/face11.png")
-        face12 = Image.open("icon/face12.png")
-        frame = Image.open("icon/frame.png")
-        ribbon = Image.open("icon/ribbon.png")
-        dot = Image.open("icon/spotted_mask.png")
-        stripe = Image.open("icon/stripe_mask.png")
-        base_mask = Image.open("icon/pants_base_mask.png")
+        
+        self.base_path = path.join(path.dirname(path.abspath(__file__)),"icon")
+        base = Image.open(self.base_path + "/non_nopants.png")
+        base_pants = Image.open(self.base_path + "/non_pants.png")
+        cheek1 = Image.open(self.base_path + "/cheek1.png")
+        cheek2 = Image.open(self.base_path + "/cheek2.png")
+        cheek3 = Image.open(self.base_path + "/cheek3.png")
+        face1 = Image.open(self.base_path + "/face1.png")
+        face2 = Image.open(self.base_path + "/face2.png")
+        face3 = Image.open(self.base_path + "/face3.png")
+        face4 = Image.open(self.base_path + "/face4.png")
+        face5 = Image.open(self.base_path + "/face5.png")
+        face6 = Image.open(self.base_path + "/face6.png")
+        face7 = Image.open(self.base_path + "/face7.png")
+        face8 = Image.open(self.base_path + "/face8.png")
+        face9 = Image.open(self.base_path + "/face9.png")
+        face10 = Image.open(self.base_path + "/face10.png")
+        face11 = Image.open(self.base_path + "/face11.png")
+        face12 = Image.open(self.base_path + "/face12.png")
+        frame = Image.open(self.base_path + "/frame.png")
+        ribbon = Image.open(self.base_path + "/ribbon.png")
+        dot = Image.open(self.base_path + "/spotted_mask.png")
+        stripe = Image.open(self.base_path + "/stripe_mask.png")
+        base_mask = Image.open(self.base_path + "/pants_base_mask.png")
         self.image = {"normal":base, "pants":base_pants, "cheek":{1:cheek1, 2:cheek2, 3:cheek3},
                       "face":{1:face1, 2:face2, 3:face3, 4:face4, 5:face5, 
                               6:face6, 7:face7, 8:face8, 9:face9, 10:face10, 11:face11, 12:face12},
@@ -52,25 +78,11 @@ class Icon(object):
         self.cheek_image = self.image["cheek"][1]
         self.face_image = self.image["face"][1]
         self.equip_pants = True
-        #token = Pit.get("shima")["token"]
-        #key = Pit.get("shima")["key"]
-        auth = tweepy.OAuthHandler("LVZQwxmDqrNaOeY8q9V6XQ","F67TTUx5WmnHBu9SKvagLBVCJfxn0UdJI2LiPdQ3hU")
-        auth.set_access_token("85324406-x8wnMEaSUp6yokdFukIVBHivkfnnZE93ZMK81JBY","W5SmjPpFIsiSvklYUkhcsbWnElyQJYY8oasiY1MMqMs")
-        self.oauthapi = tweepy.API(auth)
         
-    def post(self, text):
-        self.oauthapi.update_status(text)
-        print 'posted "%s".' % text
 
-    def upload_image(self, image):
-        try:
-            self.oauthapi.update_profile_image(image)
-        except tweepy.error.TweepError:
-            print "error occured."
-
-    def command_perser(self, str):
+    def command_perser(self, text):
         ''' userstreamから受け取った文字列からコマンドを取り出し辞書で返す '''
-        itr = self.regexp.finditer(str)
+        itr = self.regexp.finditer(text)
         command = {}
         for i in itr:
             for c in ("face", "ribbon", "cheek", "pants", "nopants", "color", "base_color"):
@@ -135,8 +147,10 @@ class Icon(object):
             if c >= 0 and c < 256:
                 return True
 
-    def gen_icon(self):
-        self.icon = Image.new("RGBA", (240, 240), 0xffffff)
+    def gen_icon(self, text):
+        if not self.command_perser(text):
+            return False
+        self.icon = Image.new("RGBA", (240, 240), 0x00ffff)
         if self.command.has_key("pants") or self.command.has_key("color") or self.command.has_key("base_color"):
             self._gen_pants()
             self.equip_pants = True
@@ -148,7 +162,8 @@ class Icon(object):
         else:
             self._gen_pants()
         self._gen_face()
-        self.icon.save("icon/icon.png")
+        self.icon.save(self.base_path + "/icon.png")
+        return self.icon
 
     def _gen_pants(self):
         if self.command.has_key("pants"):

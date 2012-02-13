@@ -4,5 +4,8 @@
 *.pyc
 .project
 .pydevproject
+lib/
+boxnya.py
+settings.py
 conf/
 log/

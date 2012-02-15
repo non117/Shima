@@ -17,7 +17,7 @@ class shima(Output):
         apilist = [Api(twi["atoken"],twi["atokensecret"]) for twi in self.twitter]
         self.api = None
         for a in apilist:
-            user = a.usertimeline(count=1)[0]["user"]
+            user = a.user_timeline(count=1)[0]["user"]
             name = user["screen_name"]
             if name == self.screen_name:
                 self.api = a

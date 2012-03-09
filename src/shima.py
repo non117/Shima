@@ -2,7 +2,7 @@
 import Image, ImageChops
 import re
 from os import path
-from random import randint
+from random import randint, random
 
 from lib.core import Output
 from lib.twitter.api import Api
@@ -99,6 +99,8 @@ class Icon(object):
         if command.has_key("face"):
             num = int(re.compile("\d{1,2}").search(command["face"]).group())
             if num > 0 and num < 13:
+                if num == 10 and random() >= 0.1:
+                    num = randint(0, 13)
                 command["face"] = num
             else:
                 del command["face"]

@@ -100,7 +100,7 @@ class Icon(object):
             num = int(re.compile("\d{1,2}").search(command["face"]).group())
             if num > 0 and num < 13:
                 if num == 10 and random() >= 0.1:
-                    num = randint(0, 13)
+                    num = randint(1, 12)
                 command["face"] = num
             else:
                 del command["face"]

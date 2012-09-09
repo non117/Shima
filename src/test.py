@@ -2,6 +2,6 @@
 from shima import Icon
 
 if __name__ == "__main__":
-    command = u"face 12 base dd55ff 778899 dot cheek 3"
+    command = u"face 7 base ffffff 778899 dot cheek 3 ★ 眼鏡"
     icon = Icon()
     print icon.gen_icon(command)

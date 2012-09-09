@@ -113,6 +113,7 @@ class Icon(object):
         ''' commandの辞書の値が正しいかチェックする '''
         command_dict = {}
         command_dict["others"] = []
+        print command_list
         for com in command_list:
             if "face" in com:
                 num = int(re.compile("\d{1,2}").search(com).group())
@@ -153,8 +154,10 @@ class Icon(object):
             
             elif "nopants" in com:
                 command_dict["nopants"] = True
-            elif com.strip() in self.others:
-                command_dict["others"].append(com.strip())
+            
+            for accessory in self.others:
+                if accessory in com:
+                    command_dict["others"].append(accessory)
         return command_dict
 
     def _color_is_valid(self, color):

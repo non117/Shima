@@ -48,7 +48,7 @@ class Icon(object):
                         ur"oval,,,":ur"oval|丸|メガネ|眼鏡|めがね|glass",
                         ur"square,,,":ur"square|四角",
                         }
-        
+        self.others = ["sigh", "angry", "mosaic", "star", "sweat", "oval", "square", "ribbon"]
         self.base_path = path.join(path.dirname(path.abspath(__file__)),"icon")
         base = Image.open(self.base_path + "/non_nopants.png")
         base_pants = Image.open(self.base_path + "/non_pants.png")
@@ -95,6 +95,7 @@ class Icon(object):
         self.cheek_image = self.image["cheek"][1]
         self.face_image = self.image["face"][1]
         self.equip_pants = True
+        self.prev_others = []
         
         # initialize
         self.gen_icon(u"face 4 base ffffff 00ffff dot cheek 3 眼鏡")
@@ -152,8 +153,7 @@ class Icon(object):
             
             elif "nopants" in com:
                 command_dict["nopants"] = True
-                
-            else:
+            elif com.strip() in self.others:
                 command_dict["others"].append(com.strip())
         return command_dict
 
@@ -208,5 +208,10 @@ class Icon(object):
         self.icon.paste(self.cheek_image, mask=self.cheek_image)
 
     def _gen_others(self):
-        for accessory in self.command["others"]:
+        if self.command["others"] == []:
+            others = self.prev_others
+        else:
+            others = self.command["others"]
+            self.prev_others = others
+        for accessory in others:
             self.icon.paste(self.image[accessory], mask=self.image[accessory])

@@ -112,6 +112,8 @@ class Icon(object):
     def _validate(self, command_list):
         ''' commandの辞書の値が正しいかチェックする '''
         command_dict = {}
+        command_dict["others"] = []
+        
         for com in command_list:
             if "face" in com:
                 # face n 以外の文字列を落として数字だけを取り出す
@@ -155,9 +157,11 @@ class Icon(object):
             elif "nopants" in com:
                 command_dict["nopants"] = True
             
-            command_dict["others"] = [accessory for accessory in self.others if accessory in com]
-            if command_dict["others"] == []: del command_dict["others"]
-
+            for accessory in self.others:
+                if accessory in com:
+                    command_dict["others"].append(accessory)
+            
+        if command_dict["others"] == []: del command_dict["others"]
         return command_dict
 
     def _color_is_valid(self, color):

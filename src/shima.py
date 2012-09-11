@@ -112,18 +112,17 @@ class Icon(object):
     def _validate(self, command_list):
         ''' commandの辞書の値が正しいかチェックする '''
         command_dict = {}
-        command_dict["others"] = []
-        print command_list
         for com in command_list:
             if "face" in com:
-                num = int(re.compile("\d{1,2}").search(com).group())
+                # face n 以外の文字列を落として数字だけを取り出す
+                num = int(re.search(self.regexp_dic[ur"face \2,,,"], com).group().replace("face",""))
                 if num > 0 and num < 13:
                     if num == 10 and random() >= 0.1:
                         num = randint(1, 12)
                     command_dict["face"] = num
             
             elif "cheek" in com:
-                num = int(re.compile("\d").search(com).group())
+                num = int(re.search(self.regexp_dic[ur"cheek \2,,,"], com).group().replace("cheek",""))
                 if num == 1 or num == 2 or num == 3:
                     command_dict["cheek"] = num
             
@@ -143,6 +142,7 @@ class Icon(object):
                     base_color = (int(base_color_16[:2],16), int(base_color_16[2:4],16), int(base_color_16[4:6],16))
                 if self._color_is_valid(base_color): # RGB範囲チェック
                     command_dict["base_color"] = base_color
+            
             elif "color" in com:
                 color_str = com.replace("color","").strip()
                 if ',' in color_str: # ','区切りの色指定の場合.
@@ -155,9 +155,9 @@ class Icon(object):
             elif "nopants" in com:
                 command_dict["nopants"] = True
             
-            for accessory in self.others:
-                if accessory in com:
-                    command_dict["others"].append(accessory)
+            command_dict["others"] = [accessory for accessory in self.others if accessory in com]
+            if command_dict["others"] == []: del command_dict["others"]
+
         return command_dict
 
     def _color_is_valid(self, color):
@@ -181,6 +181,7 @@ class Icon(object):
             self._gen_pants()
         self._gen_face()
         self._gen_others()
+        self.icon.putalpha(255)
         self.icon.save(self.base_path + "/icon.png")
         return self.icon
 
@@ -211,10 +212,10 @@ class Icon(object):
         self.icon.paste(self.cheek_image, mask=self.cheek_image)
 
     def _gen_others(self):
-        if self.command["others"] == []:
-            others = self.prev_others
-        else:
+        if self.command.has_key("others"):
             others = self.command["others"]
             self.prev_others = others
+        else:
+            others = self.prev_others
         for accessory in others:
             self.icon.paste(self.image[accessory], mask=self.image[accessory])

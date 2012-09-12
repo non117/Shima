@@ -115,7 +115,7 @@ class Icon(object):
         command_dict["others"] = []
         
         for com in command_list:
-            if "face" in com:
+            if re.search(self.regexp_dic[ur"face \2,,,"], com):
                 # face n 以外の文字列を落として数字だけを取り出す
                 num = int(re.search(self.regexp_dic[ur"face \2,,,"], com).group().replace("face",""))
                 if num > 0 and num < 13:
@@ -123,7 +123,7 @@ class Icon(object):
                         num = randint(1, 12)
                     command_dict["face"] = num
             
-            elif "cheek" in com:
+            elif re.search(self.regexp_dic[ur"cheek \2,,,"], com):
                 num = int(re.search(self.regexp_dic[ur"cheek \2,,,"], com).group().replace("cheek",""))
                 if num == 1 or num == 2 or num == 3:
                     command_dict["cheek"] = num

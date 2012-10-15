@@ -2,7 +2,7 @@
 import Image, ImageChops
 import re
 from os import path
-from random import randint, random
+from random import choice, random
 
 from lib.core import Output
 from lib.twitter.api import Api
@@ -102,10 +102,12 @@ class Icon(object):
 
     def command_perser(self, text):
         ''' userstreamから受け取った文字列からコマンドを取り出し辞書で返す '''
+        print text
         text = text.replace(u",,,",u"")
         for repl, pattern in self.regexp_dic.items():
             text = re.sub(pattern, repl, text)
         command_list = filter(lambda x:x!="",text.split(u",,,"))
+        print command_list
         self.command = self._validate(command_list)
         return self.command
 
@@ -119,8 +121,8 @@ class Icon(object):
                 # face n 以外の文字列を落として数字だけを取り出す
                 num = int(re.search(self.regexp_dic[ur"face \2,,,"], com).group().replace("face",""))
                 if num > 0 and num < 13:
-                    if num == 10 and random() >= 0.1:
-                        num = randint(1, 12)
+                    if num == 10 and random() >= 0.015:
+                        num = choice(range(1,10) + [11,12])
                     command_dict["face"] = num
             
             elif re.search(self.regexp_dic[ur"cheek \2,,,"], com):
@@ -133,26 +135,20 @@ class Icon(object):
             elif "dot" in com:
                 command_dict["pants"] = "dot"
             
-            elif "base_color" in com:
-                base_color_10 = re.compile("\d{1,3}\s?,\s?\d{1,3}\s?,\s?\d{1,3}").search(com)
-                base_color_16 = re.compile("[0-9a-fA-F]{6}").search(com)
-                if base_color_10:
-                    base_color_10 = base_color_10.group()
-                    base_color = tuple(map(int, base_color_10.split(',')))
-                elif base_color_16:
-                    base_color_16 = base_color_16.group()
-                    base_color = (int(base_color_16[:2],16), int(base_color_16[2:4],16), int(base_color_16[4:6],16))
-                if self._color_is_valid(base_color): # RGB範囲チェック
-                    command_dict["base_color"] = base_color
-            
             elif "color" in com:
-                color_str = com.replace("color","").strip()
-                if ',' in color_str: # ','区切りの色指定の場合.
-                    color = tuple(map(int, color_str.split(',')))
-                else: # 16進カラーコードの場合.
-                    color = (int(color_str[:2],16), int(color_str[2:4],16), int(color_str[4:6],16))
+                color_10 = re.compile("\d{1,3}\s?,\s?\d{1,3}\s?,\s?\d{1,3}").search(com)
+                color_16 = re.compile("[0-9a-fA-F]{6}").search(com)
+                if color_10:
+                    color_10 = color_10.group()
+                    color = tuple(map(int, color_10.split(',')))
+                elif color_16:
+                    color_16 = color_16.group()
+                    color = (int(color_16[:2],16), int(color_16[2:4],16), int(color_16[4:6],16))
                 if self._color_is_valid(color): # RGB範囲チェック
-                    command_dict["color"] = color
+                    if "base_color" in com:
+                        command_dict["base_color"] = color
+                    elif "color" in com:
+                        command_dict["color"] = color
             
             elif "nopants" in com:
                 command_dict["nopants"] = True

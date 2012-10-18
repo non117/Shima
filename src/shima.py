@@ -47,7 +47,7 @@ class Icon(object):
                         ur"sweat,,,":ur"sweat|汗",
                         ur"oval,,,":ur"oval|丸|メガネ|眼鏡|めがね|glass",
                         ur"square,,,":ur"square|四角",
-                        ur"pancake,,,":ur"パンケーキ|ぱんけーき|pancake",
+                        ur"pancake,,,":ur"(パンツ?|ホット)ケーキ|(ぱん|ほっと)けーき|pancake",
                         ur"clear,,,":ur"clear|クリア",
                         }
         self.others = ["sigh", "angry", "mosaic", "star", "sweat", "oval", "square", "ribbon", "pancake", "clear"]

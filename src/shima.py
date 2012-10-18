@@ -47,8 +47,10 @@ class Icon(object):
                         ur"sweat,,,":ur"sweat|汗",
                         ur"oval,,,":ur"oval|丸|メガネ|眼鏡|めがね|glass",
                         ur"square,,,":ur"square|四角",
+                        ur"pancake,,,":ur"パンケーキ|ぱんけーき|pancake",
+                        ur"clear,,,":ur"clear|クリア",
                         }
-        self.others = ["sigh", "angry", "mosaic", "star", "sweat", "oval", "square", "ribbon"]
+        self.others = ["sigh", "angry", "mosaic", "star", "sweat", "oval", "square", "ribbon", "pancake", "clear"]
         self.base_path = path.join(path.dirname(path.abspath(__file__)),"icon")
         base = Image.open(self.base_path + "/non_nopants.png")
         base_pants = Image.open(self.base_path + "/non_pants.png")
@@ -77,6 +79,7 @@ class Icon(object):
         sigh = Image.open(self.base_path + "/sigh.png")
         star = Image.open(self.base_path + "/star.png")
         sweat = Image.open(self.base_path + "/sweat.png")
+        pancake = Image.open(self.base_path + "/pancake.png")
         glasses_oval = Image.open(self.base_path + "/glasses_oval.png")
         glasses_sq = Image.open(self.base_path + "/glasses_sq.png")
         self.image = {"normal":base, "pants":base_pants, "cheek":{1:cheek1, 2:cheek2, 3:cheek3},
@@ -85,7 +88,7 @@ class Icon(object):
                        "frame":frame,
                       "ribbon":ribbon, "dot":dot, "stripe":stripe, "base_mask":base_mask,
                       "angry":angry, "mosaic":mosaic, "sweat":sweat, "sigh":sigh, "star":star,
-                      "oval":glasses_oval, "square":glasses_sq,
+                      "oval":glasses_oval, "square":glasses_sq, "pancake":pancake
                       }
         
         self.base_image = self.image["pants"]
@@ -213,9 +216,13 @@ class Icon(object):
 
     def _gen_others(self):
         if self.command.has_key("others"):
+            if "clear" in self.command["others"]: # clearしてコマンドから削除
+                self.prev_others = []
+                self.command["others"].remove("clear")
+            
             others = self.command["others"]
-            self.prev_others = others
-        else:
-            others = self.prev_others
-        for accessory in others:
+            ls = self.prev_others + others
+            self.prev_others = sorted(set(ls), key=ls.index) # 重複削除
+        
+        for accessory in self.prev_others:
             self.icon.paste(self.image[accessory], mask=self.image[accessory])

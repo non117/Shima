@@ -159,6 +159,7 @@ class Icon(object):
             for accessory in self.others:
                 if accessory in com:
                     command_dict["others"].append(accessory)
+                command_dict["others"] = list(set(command_dict["others"]))
             
         if command_dict["others"] == []: del command_dict["others"]
         return command_dict

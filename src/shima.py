@@ -48,9 +48,10 @@ class Icon(object):
                         ur"oval,,,":ur"oval|丸|メガネ|眼鏡|めがね|glass",
                         ur"square,,,":ur"square|四角",
                         ur"pancake,,,":ur"(パンツ?|ホット)ケーキ|(ぱん|ほっと)けーき|pancake",
+                        ur"kigurumi,,,":ur"kigurumi|mao|着ぐるみ|きぐるみ",
                         ur"clear,,,":ur"clear|クリア",
                         }
-        self.others = ["sigh", "angry", "mosaic", "star", "sweat", "oval", "square", "ribbon", "pancake", "clear"]
+        self.others = ["sigh", "angry", "mosaic", "star", "sweat", "oval", "square", "ribbon", "pancake", "kigurumi", "clear"]
         self.base_path = path.join(path.dirname(path.abspath(__file__)),"icon")
         base = Image.open(self.base_path + "/non_nopants.png")
         base_pants = Image.open(self.base_path + "/non_pants.png")
@@ -82,13 +83,14 @@ class Icon(object):
         pancake = Image.open(self.base_path + "/pancake.png")
         glasses_oval = Image.open(self.base_path + "/glasses_oval.png")
         glasses_sq = Image.open(self.base_path + "/glasses_sq.png")
+        kigurumi = Image.open(self.base_path + "/mao.png")
         self.image = {"normal":base, "pants":base_pants, "cheek":{1:cheek1, 2:cheek2, 3:cheek3},
                       "face":{1:face1, 2:face2, 3:face3, 4:face4, 5:face5, 
                               6:face6, 7:face7, 8:face8, 9:face9, 10:face10, 11:face11, 12:face12},
                        "frame":frame,
                       "ribbon":ribbon, "dot":dot, "stripe":stripe, "base_mask":base_mask,
                       "angry":angry, "mosaic":mosaic, "sweat":sweat, "sigh":sigh, "star":star,
-                      "oval":glasses_oval, "square":glasses_sq, "pancake":pancake
+                      "oval":glasses_oval, "square":glasses_sq, "pancake":pancake, "kigurumi":kigurumi,
                       }
         
         self.base_image = self.image["pants"]
